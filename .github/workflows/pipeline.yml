@@ -26,11 +26,6 @@ jobs:
       - name: Test
         run: npm run test
 
-      - name: Deploy app
-        uses: sws2apps/render-deployment@v1.8.0
-        if: github.event_name == 'push'
-        with:
-          serviceId: ${{ secrets.RENDER_SERVICE_ID }}
-          apiKey: ${{ secrets.RENDER_API_KEY }}
-          startCommand: "npm run start-prod"
-          buildCommand: "npm run build"
+      - name: Trigger deployment
+        if: ${{ github.event_name == 'push' }}
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
